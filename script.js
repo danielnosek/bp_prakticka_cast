@@ -1,78 +1,129 @@
 const questions = [
   {
-    question: "Co je phishing?",
-    options: ["Technika útoku zaměřená na získání citlivých informací od uživatele", "Překročení fyzických bariér pro neoprávněný přístup", "Vytvoření falešného předtextu pro získání informací"],
+    question: "Co je to phishing?",
+    options: [
+      "Získávání citlivých informací prostřednictvím falešných emailů",
+      "Útok na síťovou infrastrukturu",
+      "Pokus o fyzický vstup do firmy"
+    ],
+    answer: 0
+  },
+  {
+    question: "Co je to tailgating?",
+    options: [
+      "Zneužití nezabezpečeného přístupového bodu",
+      "Neoprávněný přístup do systému pomocí ukradených přihlašovacích údajů",
+      "Vstup do zabezpečených prostorů za souhlasu zaměstnance"
+    ],
+    answer: 2
+  },
+  {
+    question: "Co je to pretexting?",
+    options: [
+      "Podvodný výmysl za účelem získání informací",
+      "Útok na firemní servery",
+      "Neoprávněné sledování síťového provozu"
+    ],
+    answer: 0
+  },
+  {
+    question: "Jakou roli hraje social engineering při útocích na firemní zaměstnance?",
+    options: [
+      "Social engineering není používán při útocích na zaměstnance",
+      "Social engineering je pouze o technických útocích",
+      "Social engineering využívá lidského faktoru k získání informací"
+    ],
+    answer: 2
+  },
+  {
+    question: "Co je to vishing?",
+    options: [
+      "Podvodné získávání informací pomocí telefonního hovoru",
+      "Fyzický útok na zaměstnance",
+      "Útok na firemní databáze"
+    ],
+    answer: 0
+  },
+  {
+    question: "Co je to shoulder surfing?",
+    options: [
+      "Podvodná manipulace s firemním hardwarem",
+      "Fyzické sledování a odposlech zaměstnanců",
+      "Útok na firemní webové stránky"
+    ],
     answer: 1
   },
   {
-    question: "Co je tailgating?",
-    options: ["Metoda založená na získání přístupových karet", "Využití neaktualizovaného softwaru", "Situace, kdy se někdo dostane do zabezpečeného prostoru za někým, kdo má oprávnění"],
-    answer: 3
+    question: "Co je to dumpster diving?",
+    options: [
+      "Prohledávání odpadků s cílem získat citlivé informace",
+      "Fyzický útok na firemní budovy",
+      "Útok na firemní emailové účty"
+    ],
+    answer: 0
   },
-  // Další otázky...
+  {
+    question: "Co je to spear phishing?",
+    options: [
+      "Cílený phishing útok na konkrétní osobu nebo organizaci",
+      "Útok na počítačové sítě pomocí malwaru",
+      "Zneužití zranitelností v softwaru"
+    ],
+    answer: 0
+  },
+  {
+    question: "Co je to baiting?",
+    options: [
+      "Využívání předstírané identity pro získání informací",
+      "Útok na bezdrátové sítě",
+      "Podvodná nabídka nebo slib s cílem získat informace"
+    ],
+    answer: 2
+  },
+  {
+    question: "Co je to quid pro quo?",
+    options: [
+      "Podvodná nabídka výhod nebo služeb výměnou za informace",
+      "Fyzická nátlaková technika",
+      "Útok na počítačové systémy pomocí šifrování"
+    ],
+    answer: 0
+  }
 ];
 
-let currentQuestionIndex = 0;
-let score = 0;
+let currentQuestion = 0; // Proměnná pro sledování aktuální otázky
+let score = 0; // Proměnná pro sledování počtu správných odpovědí
 
-const questionElement = document.getElementById("question");
-const optionsElement = document.getElementById("options");
-const resultElement = document.getElementById("result");
-const retryButton = document.getElementById("retry-btn");
+function loadQuestion() {
+  // Funkce pro načtení otázky do rozhraní
 
-function showQuestion() {
-  const currentQuestion = questions[currentQuestionIndex];
-  questionElement.textContent = currentQuestion.question;
-  optionsElement.innerHTML = "";
-  for (let i = 0; i < currentQuestion.options.length; i++) {
-    const option = currentQuestion.options[i];
-    const liElement = document.createElement("li");
-    const inputElement = document.createElement("input");
-    inputElement.setAttribute("type", "radio");
-    inputElement.setAttribute("name", "answer");
-    inputElement.setAttribute("value", i + 1);
-    liElement.appendChild(inputElement);
-    liElement.appendChild(document.createTextNode(option));
-    optionsElement.appendChild(liElement);
-  }
-}
-
-function showResult() {
-  questionElement.style.display = "none";
-  optionsElement.style.display = "none";
-  resultElement.textContent = `Vaše skóre: ${score}/${questions.length}`;
-  resultElement.style.display = "block";
-  retryButton.style.display = "block";
+  // Přidáme průběžné počítadlo správných odpovědí
+  const scoreElem = document.getElementById("score");
+  scoreElem.textContent = `Správné odpovědi: ${score}/${currentQuestion}`;
 }
 
 function checkAnswer() {
-  const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-  if (selectedAnswer) {
-    const selectedOption = parseInt(selectedAnswer.value);
-    const currentQuestion = questions[currentQuestionIndex];
-    if (selectedOption === currentQuestion.answer) {
-      score++;
-    }
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-      showQuestion();
-    } else {
-      showResult();
-    }
+  // Funkce pro ověření zvolené odpovědi
+
+  // Zvýšíme skóre, pokud je odpověď správná
+  if (selectedAnswer === questions[currentQuestion].answer) {
+    score++;
   }
+
+  // Zvýšíme pořadí aktuální otázky
+  currentQuestion++;
+
+  // Znovu načteme další otázku nebo zobrazíme výsledek, pokud jsou otázky vyčerpány
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    const resultElem = document.getElementById("result");
+    resultElem.textContent = `Váš výsledek: ${score}/${questions.length}`;
+  }
+
+  // Aktualizujeme průběžné počítadlo správných odpovědí
+  const scoreElem = document.getElementById("score");
+  scoreElem.textContent = `Správné odpovědi: ${score}/${currentQuestion}`;
 }
 
-function retryQuiz() {
-  currentQuestionIndex = 0;
-  score = 0;
-  questionElement.style.display = "block";
-  optionsElement.style.display = "block";
-  resultElement.style.display = "none";
-  retryButton.style.display = "none";
-  showQuestion();
-}
-
-document.getElementById("submit-btn").addEventListener("click", checkAnswer);
-retryButton.addEventListener("click", retryQuiz);
-
-showQuestion();
+// Zbytek kódu zůstává stejný
